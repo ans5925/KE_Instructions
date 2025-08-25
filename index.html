@@ -3,18 +3,17 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ATC Drill (PWA v3)</title>
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>4 Basic</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#111111">
 <style>
   :root{--gap:12px}
   *{box-sizing:border-box}
   body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;padding:16px;line-height:1.35;background:#f7f7f9}
-  h1{font-size:18px;margin:0 0 8px}
+  h1{font-size:18px;margin:0 0 6px}
+  small.muted{font-size:12px;color:#7a7a7a}
   .card{background:#fff;border:1px solid #e6e6ea;border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
-  .row{display:flex;gap:var(--gap);flex-wrap:wrap;align-items:center}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
   .col{display:flex;flex-direction:column;gap:6px}
   .label{font-size:13px;color:#666;display:flex;align-items:center;gap:6px}
   .hint{font-size:12px;color:#999;border:1px solid #ddd;border-radius:6px;padding:1px 6px}
@@ -26,9 +25,8 @@
   button:active{transform:scale(0.98)}
   .primary{background:#111;color:#fff;border-color:#111}
   .danger{background:#ff3b30;color:#fff;border-color:#ff3b30}
-  .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
-  .muted{color:#666}
-  .grid{display:grid;grid-template-columns:1fr;gap:var(--gap)}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .grid{display:grid;grid-template-columns:1fr;gap:12px}
   @media (min-width:920px){ .grid{grid-template-columns:1fr 1fr} }
   .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid #ddd;border-radius:999px;font-size:12px;color:#555}
   .tx{color:#fff;background:#ff3b30;border-color:#ff3b30}
@@ -46,36 +44,65 @@
   .blur-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#333;background:rgba(255,255,255,.6);border-radius:10px;font-size:13px}
   .hidden{display:none}
   #logList{max-height:240px;overflow:auto;margin-top:8px}
-  #logList .log-item{border-top:1px dashed #e5e5e9;padding:8px 0}
+  #logList .log-item{border-top:1px dashed #e5e5e9;padding:8px 0;display:flex;gap:10px;align-items:flex-start}
+  #logList .log-item label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+  #logList .log-item input[type="checkbox"]{width:18px;height:18px;margin-top:2px}
+  .log-text{white-space:pre-wrap}
+  .log-wrong{color:#b00020}
+  .log-summary{margin-top:8px;border-top:1px solid #eee;padding-top:8px;display:flex;gap:10px;flex-wrap:wrap}
   .control{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   select, input[type="range"]{padding:6px;border:1px solid #d0d0d8;border-radius:10px}
-  .approach {display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .approach .speed {font-size:20px;font-weight:700}
+
+  /* Approach Generator */
+  .approach-wrap{display:flex;flex-direction:column;gap:10px}
+  .ap-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+  .ap-box{flex:0 0 auto}
+  .ap-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px dashed #d0d0d8;border-radius:999px;color:#555;background:#fafafa}
+  .ap-digit{width:56px;height:60px;border-radius:14px;font-size:26px}
+  .ap-mid{font-weight:700;font-size:22px;padding:0 6px}
+  .ap-big{font-size:28px;font-weight:800;padding:0 12px;border-radius:12px;background:#111;color:#fff;border:1px solid #111}
+  .ap-big small{font-size:14px;font-weight:600;opacity:.9;margin-left:6px}
+  .ap-range{font-size:13px;color:#666;margin-left:6px}
+  .ap-value{font-size:28px;font-weight:800}
+
+  /* Floating buttons */
+  .fab-switch{display:flex;align-items:center;gap:8px}
+  .switch{position:relative;width:44px;height:24px}
+  .switch input{opacity:0;width:0;height:0}
+  .slider{position:absolute;inset:0;background:#d5d5db;border-radius:999px;transition:.2s}
+  .slider:before{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.2s}
+  .switch input:checked + .slider{background:#111}
+  .switch input:checked + .slider:before{transform:translateX(20px)}
+  .fab-wrap{position:fixed;right:14px;bottom:16px;display:none;flex-direction:column;gap:10px;z-index:1500}
+  .fab{min-width:56px;min-height:56px;border-radius:999px;border:0;color:#fff;background:#111;font-weight:700;box-shadow:0 8px 18px rgba(0,0,0,.25);font-size:16px}
+  .fab.secondary{background:#2f2f35}
+  .fab.red{background:#ff3b30}
 </style>
 </head>
 <body>
   <div class="card">
-    <div class="row" style="justify-content:space-between;gap:12px">
+    <div class="row" style="justify-content:space-between;">
       <div>
-        <h1>ATC Drill (PWA v3)</h1>
-        <div class="muted">H/A/S 이동 · N(Next)/B(Say again)/I(Init)/R(Reinit) · <b>Space</b>=Instruction 토글</div>
+        <h1>ATC Drill v1.1 · <small class="muted">250822</small></h1>
+        <small class="muted">단축키: N/B/I/R/H/A/S/Space, G=Approach Generate</small>
       </div>
       <div class="control">
-        <label class="label">Voice
-          <select id="voiceSel"></select>
-        </label>
-        <label class="label">Rate
-          <input type="range" id="rate" min="0.6" max="1.5" step="0.01" value="0.9">
-        </label>
-        <label class="label">Pitch
-          <input type="range" id="pitch" min="0.6" max="1.4" step="0.01" value="0.9">
-        </label>
+        <label class="label">Voice <select id="voiceSel"></select></label>
+        <span class="label">Rate <input type="range" id="rate" min="0.6" max="1.5" step="0.01" value="0.9"></span>
+        <span class="label">Pitch <input type="range" id="pitch" min="0.6" max="1.4" step="0.01" value="0.9"></span>
         <span id="txLamp" class="pill hidden tx">TX</span>
+        <div class="fab-switch">
+          <span class="label">Floating</span>
+          <label class="switch">
+            <input id="fabToggle" type="checkbox"><span class="slider"></span>
+          </label>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="grid">
+    <!-- 입력/난이도 -->
     <div class="card">
       <div class="row" style="justify-content:space-between;">
         <div class="col" style="flex:1">
@@ -84,6 +111,7 @@
             <option value="1">1 - Easy (±1000/2000ft, SPD 유지, 180° turn, 1000/1500FPM)</option>
             <option value="2">2 - Normal (±1000/2000ft, SPD ±20kt, 180° turn, 1000/1500FPM)</option>
             <option value="3" selected>3 - Hard (가변 규칙, 상승 1000/1500/2000)</option>
+            <option value="4">4 - Extreme (HDG 5°, ALT 100ft·≤9500, ΔALT 1500~3000/100, SPD 5kt, FPM 500~3000/100)</option>
           </select>
         </div>
       </div>
@@ -124,54 +152,74 @@
       </div>
     </div>
 
+    <!-- 인스트럭션/로그/어프로치 -->
     <div class="card">
       <div class="row" style="flex-wrap:wrap;gap:10px">
         <button id="sayAgain">Say Again <span class="hint">B</span></button>
         <button id="next" class="primary">Next Instruction <span class="hint">N</span></button>
       </div>
-      <div class="card blur-wrap" style="margin-top:14px">
+
+      <!-- 터치로 토글 가능 -->
+      <div id="instCard" class="card blur-wrap" style="margin-top:14px">
         <div class="label">Instruction (현재) <span class="hint">Space</span></div>
         <div id="textOut" class="mono blurred" style="white-space:pre-wrap;font-size:15px"></div>
-        <div id="blurHint" class="blur-hint">터치 또는 Space로 보기</div>
-      </div>
-
-      <div class="card" style="margin-top:14px">
-        <div class="label">Approach Speed Generator</div>
-        <div class="approach" style="margin-top:8px">
-          <div class="col">
-            <span class="label">Min (kt)</span>
-            <div class="digit-grid" id="apprMinBlock">
-              <input class="digit" id="pmin1" readonly maxlength="1" />
-              <input class="digit" id="pmin2" readonly maxlength="1" />
-              <input class="digit" id="pmin3" readonly maxlength="1" />
-            </div>
-          </div>
-          <div class="col">
-            <span class="label">Max (kt)</span>
-            <div class="digit-grid" id="apprMaxBlock">
-              <input class="digit" id="pmax1" readonly maxlength="1" />
-              <input class="digit" id="pmax2" readonly maxlength="1" />
-              <input class="digit" id="pmax3" readonly maxlength="1" />
-            </div>
-          </div>
-          <div class="col" style="justify-content:flex-end">
-            <button id="btnApproach" class="primary">Generate</button>
-            <div class="note mono" id="apprRangeNote">범위: 145–152 kt</div>
-          </div>
-          <div class="col" style="flex:1;align-items:flex-start;justify-content:flex-end">
-            <span id="apprVal" class="speed mono">—</span>
-          </div>
-        </div>
-        <div class="note">* 이 범위는 위 툴과 독립적입니다. 입력은 팝업 키패드로만 가능합니다.</div>
+        <div id="blurHint" class="blur-hint">터치로 보기 / 다시 터치로 숨기기</div>
       </div>
 
       <div class="card" style="margin-top:14px">
         <div class="label">Instruction Log</div>
         <div id="logList"></div>
+        <div id="logSummary" class="log-summary note mono">총 0 / 정답 0 / 오답 0 / 오답 0%</div>
       </div>
+
+      <!-- Approach Speed Generator -->
+      <div class="card" style="margin-top:14px">
+        <div class="label">Approach Speed Generator <span class="ap-chip">기본 145–152 kt</span></div>
+        <div class="approach-wrap">
+          <div class="ap-row">
+            <div class="ap-box">
+              <span class="label">Min (kt)</span>
+              <div class="digit-grid" id="apprMinBlock">
+                <input class="digit ap-digit" id="pmin1" readonly maxlength="1" />
+                <input class="digit ap-digit" id="pmin2" readonly maxlength="1" />
+                <input class="digit ap-digit" id="pmin3" readonly maxlength="1" />
+              </div>
+            </div>
+            <div class="ap-mid">~</div>
+            <div class="ap-box">
+              <span class="label">Max (kt)</span>
+              <div class="digit-grid" id="apprMaxBlock">
+                <input class="digit ap-digit" id="pmax1" readonly maxlength="1" />
+                <input class="digit ap-digit" id="pmax2" readonly maxlength="1" />
+                <input class="digit ap-digit" id="pmax3" readonly maxlength="1" />
+              </div>
+            </div>
+            <div class="ap-box" style="margin-left:auto">
+              <button id="btnApproach" class="ap-big">Generate <small>G</small></button>
+              <span class="ap-range" id="apprRangeNote">범위: 145–152 kt</span>
+            </div>
+          </div>
+          <div class="ap-row">
+            <div class="label">Result</div>
+            <div class="ap-value mono" id="apprVal">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="diag" class="note"></div>
     </div>
   </div>
 
+  <!-- Floating buttons -->
+  <div id="fabWrap" class="fab-wrap">
+    <button id="fabNext" class="fab">N</button>
+    <button id="fabSay" class="fab secondary">B</button>
+    <button id="fabGen" class="fab secondary">G</button>
+    <button id="fabInit" class="fab secondary">I</button>
+    <button id="fabRe" class="fab red">R</button>
+  </div>
+
+  <!-- Keypad -->
   <div id="backdrop" class="sheet-backdrop"></div>
   <div id="sheet" class="sheet" aria-hidden="true">
     <div class="sheet-head">
@@ -189,159 +237,164 @@
   </div>
 
 <script>
-/* ====== Voice dropdown with Samantha default ====== */
-const voiceSel = document.getElementById('voiceSel');
-const rateEl = document.getElementById('rate');
-const pitchEl = document.getElementById('pitch');
-const txLamp = document.getElementById('txLamp');
+/* ===== 화면 에러 표기 ===== */
+(function(){
+  var diag=document.getElementById('diag');
+  window.onerror=function(msg,src,line,col,err){ diag.textContent='[Error] '+msg+' @'+line+':'+col; };
+})();
 
+/* ===== TTS (Samantha 우선) ===== */
+var voiceSel=document.getElementById('voiceSel');
+var rateEl=document.getElementById('rate');
+var pitchEl=document.getElementById('pitch');
+var txLamp=document.getElementById('txLamp');
 function loadVoices(){
-  const vs = window.speechSynthesis.getVoices();
-  const prev = voiceSel.value;
-  voiceSel.innerHTML = '';
-  vs.forEach(v => {
-    const opt = document.createElement('option');
-    opt.value = v.name;
-    opt.textContent = `${v.name} (${v.lang})`;
-    voiceSel.appendChild(opt);
-  });
-  if (prev && Array.from(voiceSel.options).some(o => o.value === prev)) {
-    voiceSel.value = prev;
-    return;
-  }
-  const samantha = Array.from(voiceSel.options).find(o => /Samantha/.test(o.value));
-  if (samantha) { voiceSel.value = samantha.value; return; }
-  const enUS = Array.from(voiceSel.options).find(o => /(en-US)/.test(o.textContent));
-  if (enUS) { voiceSel.value = enUS.value; return; }
-  const engAny = Array.from(voiceSel.options).find(o => /(en-/.test(o.textContent));
-  if (engAny) { voiceSel.value = engAny.value; return; }
-  if (voiceSel.options.length) voiceSel.selectedIndex = 0;
+  try{
+    var vs=window.speechSynthesis?window.speechSynthesis.getVoices():[];
+    var prev=voiceSel.value||''; voiceSel.innerHTML='';
+    for(var i=0;i<vs.length;i++){ var v=vs[i],opt=document.createElement('option'); opt.value=v.name; opt.textContent=v.name+' ('+v.lang+')'; voiceSel.appendChild(opt); }
+    var opts=voiceSel.options;
+    if(prev){ for(var j=0;j<opts.length;j++){ if(opts[j].value===prev){ voiceSel.value=prev; return; } } }
+    for(var j1=0;j1<opts.length;j1++){ if(/Samantha/.test(opts[j1].value)){ voiceSel.value=opts[j1].value; return; } }
+    for(var j2=0;j2<opts.length;j2++){ if(/\(en-US\)/.test(opts[j2].textContent)){ voiceSel.value=opts[j2].value; return; } }
+    for(var j3=0;j3<opts.length;j3++){ if(/\(en-/.test(opts[j3].textContent)){ voiceSel.value=opts[j3].value; return; } }
+    if(opts.length) voiceSel.selectedIndex=0;
+  }catch(e){ document.getElementById('diag').textContent='[Voices] '+e.message; }
 }
-if ('speechSynthesis' in window){
-  loadVoices();
-  window.speechSynthesis.onvoiceschanged = loadVoices;
-}
-
+if('speechSynthesis' in window){ loadVoices(); window.speechSynthesis.onvoiceschanged=loadVoices; }
 function speak(text){
   if(!('speechSynthesis' in window)) return;
-  const u = new SpeechSynthesisUtterance(text);
-  const voices = window.speechSynthesis.getVoices();
-
-  let chosen = voices.find(v => v.name === (voiceSel?.value || ''));
-  if (!chosen) chosen = voices.find(v => v.name.includes('Samantha'));
-  if (!chosen) chosen = voices.find(v => v.lang === 'en-US');
-  if (!chosen) chosen = voices.find(v => v.lang?.toLowerCase().startsWith('en'));
-  if (!chosen && voices.length) chosen = voices[0];
-
-  if (chosen) { u.voice = chosen; u.lang = chosen.lang || 'en-US'; }
-  else { u.lang = 'en-US'; }
-
-  u.rate = parseFloat(rateEl?.value || '0.9');
-  u.pitch = parseFloat(pitchEl?.value || '0.9');
-  u.onstart = () => txLamp.classList.remove('hidden');
-  u.onend   = () => txLamp.classList.add('hidden');
-  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);
+  var voices=window.speechSynthesis.getVoices(), chosen=null, wanted=voiceSel?voiceSel.value:'';
+  for(var i=0;i<voices.length;i++){ if(voices[i].name===wanted){ chosen=voices[i]; break; } }
+  if(!chosen){ for(var i2=0;i2<voices.length;i2++){ if(/Samantha/.test(voices[i2].name)){ chosen=voices[i2]; break; } } }
+  if(!chosen){ for(var i3=0;i3<voices.length;i3++){ if(voices[i3].lang==='en-US'){ chosen=voices[i3]; break; } } }
+  if(!chosen){ for(var i4=0;i4<voices.length;i4++){ var L=(voices[i4].lang||'').toLowerCase(); if(L.indexOf('en')===0){ chosen=voices[i4]; break; } } }
+  if(!chosen && voices.length) chosen=voices[0];
+  if(chosen){ u.voice=chosen; u.lang=chosen.lang||'en-US'; } else { u.lang='en-US'; }
+  u.rate=parseFloat(rateEl?rateEl.value:'0.9')||0.9;
+  u.pitch=parseFloat(pitchEl?pitchEl.value:'0.9')||0.9;
+  u.onstart=function(){ txLamp.classList.remove('hidden'); };
+  u.onend=function(){ txLamp.classList.add('hidden'); };
+  try{ window.speechSynthesis.cancel(); }catch(_){}
   window.speechSynthesis.speak(u);
 }
 
-/* ====== App core ====== */
-const MIN_ALT=3000,MAX_ALT=7500,SPD_MIN=160,SPD_MAX=210;
-const el=id=>document.getElementById(id);
-const h1=el('h1'),h2=el('h2'),h3=el('h3'),a1=el('a1'),a2=el('a2'),s1=el('s1'),s2=el('s2');
-const hdgPreview=el('hdgPreview'), altPreview=el('altPreview'), spdPreview=el('spdPreview');
-const textOut=el('textOut'), blurHint=el('blurHint'), difficultySel=el('difficulty');
-const sayAgainBtn=el('sayAgain'), nextBtn=el('next'), initBtn=el('btnInit'), reinitBtn=el('btnReinit');
-const logList=el('logList'); const headingBlock=el('headingBlock'), altBlock=el('altBlock'), speedBlock=el('speedBlock');
-const backdrop=el('backdrop'), sheet=el('sheet'), kpTarget=el('kpTarget'), kpClose=el('kpClose');
-// Approach UI
-const apprMinBlock = document.getElementById('apprMinBlock');
-const apprMaxBlock = document.getElementById('apprMaxBlock');
-const pmin1=el('pmin1'),pmin2=el('pmin2'),pmin3=el('pmin3');
-const pmax1=el('pmax1'),pmax2=el('pmax2'),pmax3=el('pmax3');
-const btnApproach=el('btnApproach'), apprVal=el('apprVal'), apprRangeNote=el('apprRangeNote');
+/* ===== Core ===== */
+var MIN_ALT=2500, MAX_ALT=9500, SPD_MIN=160, SPD_MAX=210; /* <- 제한 수정 */
+function $(id){ return document.getElementById(id); }
+var h1=$('h1'),h2=$('h2'),h3=$('h3'),a1=$('a1'),a2=$('a2'),s1=$('s1'),s2=$('s2');
+var hdgPreview=$('hdgPreview'),altPreview=$('altPreview'),spdPreview=$('spdPreview');
+var textOut=$('textOut'),blurHint=$('blurHint'),difficultySel=$('difficulty');
+var sayAgainBtn=$('sayAgain'),nextBtn=$('next'),initBtn=$('btnInit'),reinitBtn=$('btnReinit');
+var logList=$('logList'),logSummary=$('logSummary'),headingBlock=$('headingBlock'),altBlock=$('altBlock'),speedBlock=$('speedBlock');
+var instCard=$('instCard');
+var backdrop=$('backdrop'),sheet=$('sheet'),kpTarget=$('kpTarget'),kpClose=$('kpClose');
+var apprMinBlock=$('apprMinBlock'),apprMaxBlock=$('apprMaxBlock');
+var pmin1=$('pmin1'),pmin2=$('pmin2'),pmin3=$('pmin3'),pmax1=$('pmax1'),pmax2=$('pmax2'),pmax3=$('pmax3');
+var btnApproach=$('btnApproach'),apprVal=$('apprVal'),apprRangeNote=$('apprRangeNote');
+var fabToggle=$('fabToggle'),fabWrap=$('fabWrap');
+var fabNext=$('fabNext'),fabSay=$('fabSay'),fabGen=$('fabGen'),fabInit=$('fabInit'),fabRe=$('fabRe');
 
-let state={difficulty:3,cur_hdg:0,cur_alt=3000,cur_spd=160,lastText:"",lastTTS:"",activeInput:null,editSeq:false,order:[h1,h2,h3,a1,a2,s1,s2]};
+var state={difficulty:3,cur_hdg:0,cur_alt:3000,cur_spd:160,lastText:"",lastTTS:"",activeInput:null,editSeq:false,order:[h1,h2,h3,a1,a2,s1,s2]};
+var approachSeq=false, approachOrder=[];
+function clampAlt(a){ a=parseInt(a||0,10); if(a<MIN_ALT)a=MIN_ALT; if(a>MAX_ALT)a=MAX_ALT; return a; }
+function clampSpd(s){ s=parseInt(s||0,10); if(s<SPD_MIN)s=SPD_MIN; if(s>SPD_MAX)s=SPD_MAX; return s; }
+function hdgSpdInAviation(n){ n=Math.max(0,Math.min(999,parseInt(n||0,10))); var s=(''+n).padStart(3,'0'); var A=['Zero','One','Two','Tree','Four','Fife','Six','Seven','Eight','Niner']; return [A[parseInt(s[0],10)],A[parseInt(s[1],10)],A[parseInt(s[2],10)]]; }
+function altFpmInAviation(v){ v=Math.max(0,parseInt(v||0,10)); var A=['Zero','One','Two','Tree','Four','Fife','Six','Seven','Eight','Niner']; var t=Math.floor(v/1000), h=Math.floor((v%1000)/100); var p=[]; if(t)p.push(A[t]+' Thousand'); if(h)p.push(A[h]+' Hundred'); if(!p.length)p.push(A[0]+' Hundred'); return p.join(' '); }
+function digitsToInt(){ var s=''; for(var i=0;i<arguments.length;i++){ var x=arguments[i]; var v=(x.value||'0').replace(/\D/g,'').slice(0,1); s+=v; } return parseInt(s||'0',10); }
+function updatePreviews(){ var hdg=(digitsToInt(h1,h2,h3))%360, alt=digitsToInt(a1,a2)*100, spd=digitsToInt(s1,s2)*10; hdgPreview.textContent='HDG: '+(''+hdg).padStart(3,'0')+'°'; altPreview.textContent='ALT: '+alt+' ft'; spdPreview.textContent='SPD: '+spd+' kt'; }
+function addFocusRing(elm){ var arr=state.order.concat([pmin1,pmin2,pmin3,pmax1,pmax2,pmax3]); for(var i=0;i<arr.length;i++){ if(arr[i]) arr[i].classList.remove('focus-ring'); } if(elm) elm.classList.add('focus-ring'); }
+function openKeypad(inputEl){ state.activeInput=inputEl; kpTarget.textContent=inputEl.id.toUpperCase(); backdrop.style.display='block'; sheet.classList.add('show'); addFocusRing(inputEl); }
+function closeKeypad(){ sheet.classList.remove('show'); backdrop.style.display='none'; state.activeInput=null; addFocusRing(null); state.editSeq=false; approachSeq=false; approachOrder=[]; }
+function focusSection(section){ var target=(section==='H')?h1:(section==='A')?a1:s1; openKeypad(target); state.editSeq=true; }
 
-function clampAlt(a){return Math.max(MIN_ALT,Math.min(MAX_ALT,Math.trunc(a)));}
-function clampSpd(s){return Math.max(SPD_MIN,Math.min(SPD_MAX,Math.trunc(s)));}
-function hdgSpdInAviation(n){n=Math.max(0,Math.min(999,Math.trunc(n)));const s=n.toString().padStart(3,'0');const AVI=['Zero','One','Two','Tree','Four','Fife','Six','Seven','Eight','Niner'];return s.split('').map(ch=>AVI[parseInt(ch,10)]);}
-function altFpmInAviation(v){v=Math.max(0,Math.trunc(v));const AVI=['Zero','One','Two','Tree','Four','Fife','Six','Seven','Eight','Niner'];const t=Math.floor(v/1000),h=Math.floor((v%1000)/100);const p=[];if(t)p.push(`${AVI[t]} Thousand`);if(h)p.push(`${AVI[h]} Hundred`);if(!p.length)p.push(`${AVI[0]} Hundred`);return p.join(' ');}
-function instructionForTTS(t,hdg,cd,alt,spd,fpm){const ha=hdgSpdInAviation(hdg),sa=hdgSpdInAviation(spd);return `Korean air one two three tango, Turn ${t===1?'Left':'Right'} heading ${ha[0]}${ha[1]}${ha[2]}, ${cd===0?'Descend and maintain ':'Climb and Maintain '}${altFpmInAviation(alt)}, Speed ${sa[0]}${sa[1]}${sa[2]}, Rate ${altFpmInAviation(fpm)}`;}
-function textInstruction(t,hdg,cd,alt,spd,fpm){return `Korean air one two three tango, Turn ${t===1?'Left':'Right'} heading ${String(hdg).padStart(3,'0')}, ${cd===0?'Descend and maintain ':'Climb and Maintain '}${alt} Speed ${spd} Rate ${fpm}`;}
-
-function digitsToInt(...ds){let s=ds.map(x=>(x.value||'0').replace(/\D/g,'').slice(0,1)).join('');return parseInt(s||'0',10);}
-function updatePreviews(){
-  const hdg=(digitsToInt(h1,h2,h3))%360, alt=digitsToInt(a1,a2)*100, spd=digitsToInt(s1,s2)*10;
-  hdgPreview.textContent=`HDG: ${String(hdg).padStart(3,'0')}°`;
-  altPreview.textContent=`ALT: ${alt} ft`; spdPreview.textContent=`SPD: ${spd} kt`;
-}
-function addFocusRing(elm){[...state.order,pmin1,pmin2,pmin3,pmax1,pmax2,pmax3].forEach(e=>e&&e.classList.remove('focus-ring')); if(elm) elm.classList.add('focus-ring');}
-function openKeypad(inputEl){state.activeInput=inputEl; kpTarget.textContent=inputEl.id.toUpperCase(); backdrop.style.display='block'; sheet.classList.add('show'); addFocusRing(inputEl);}
-function closeKeypad(){sheet.classList.remove('show'); backdrop.style.display='none'; state.activeInput=null; addFocusRing(null);}
-function focusSection(section){let target=section==='H'?h1:section==='A'?a1:s1; openKeypad(target); state.editSeq=true;}
-
-document.getElementById('headingBlock').addEventListener('click',()=>focusSection('H'));
-document.getElementById('altBlock').addEventListener('click',()=>focusSection('A'));
-document.getElementById('speedBlock').addEventListener('click',()=>focusSection('S'));
-apprMinBlock.addEventListener('click', (e)=>{
-  const t=e.target.closest('.digit')||pmin1;
-  openKeypad(t); state.editSeq=false; // one-shot input
-});
-apprMaxBlock.addEventListener('click', (e)=>{
-  const t=e.target.closest('.digit')||pmax1;
-  openKeypad(t); state.editSeq=false;
+/* 터치로 Instruction 보기/숨기기 */
+instCard.addEventListener('click',function(){
+  var isBlur=textOut.classList.contains('blurred');
+  if(isBlur){ textOut.classList.remove('blurred'); blurHint.classList.add('hidden'); }
+  else{ textOut.classList.add('blurred'); blurHint.classList.remove('hidden'); }
 });
 
-sheet.addEventListener('click',(e)=>{
-  const btn=e.target.closest('.kp-btn'); if(!btn||!state.activeInput) return;
-  const func=btn.dataset.func;
-  if(func==='clear'){state.activeInput.value='';updatePreviews();updateApprNote();return;}
-  if(func==='back'){state.activeInput.value='';updatePreviews();updateApprNote(); if(state.editSeq){const idx=state.order.indexOf(state.activeInput); if(idx>0){openKeypad(state.order[idx-1]);}} else closeKeypad(); return;}
-  const num=e.target.textContent.trim();
+headingBlock.addEventListener('click',function(){ focusSection('H'); });
+altBlock.addEventListener('click',function(){ focusSection('A'); });
+speedBlock.addEventListener('click',function(){ focusSection('S'); });
+
+/* Min/Max: 3자리 모두 입력 전까지 팝업 유지 */
+apprMinBlock.addEventListener('click',function(e){
+  var t=e.target && e.target.classList && e.target.classList.contains('digit') ? e.target : pmin1;
+  approachSeq=true; approachOrder=[pmin1,pmin2,pmin3]; openKeypad(t);
+});
+apprMaxBlock.addEventListener('click',function(e){
+  var t=e.target && e.target.classList && e.target.classList.contains('digit') ? e.target : pmax1;
+  approachSeq=true; approachOrder=[pmax1,pmax2,pmax3]; openKeypad(t);
+});
+
+sheet.addEventListener('click',function(e){
+  var btn=e.target; while(btn && !btn.classList.contains('kp-btn')) btn=btn.parentNode;
+  if(!btn || !state.activeInput) return;
+  var func=btn.getAttribute('data-func');
+  if(func==='clear'){ state.activeInput.value=''; updatePreviews(); updateApprNote(); return; }
+  if(func==='back'){ state.activeInput.value=''; updatePreviews(); updateApprNote();
+    if(state.editSeq){ var idx=state.order.indexOf(state.activeInput); if(idx>0) openKeypad(state.order[idx-1]); else closeKeypad(); }
+    else if(approachSeq){ var idxx=approachOrder.indexOf(state.activeInput); if(idxx>0) openKeypad(approachOrder[idxx-1]); else closeKeypad(); }
+    else closeKeypad(); return;
+  }
+  var num=(btn.textContent||'').trim();
   if(/^\d$/.test(num)){
     state.activeInput.value=num; updatePreviews(); updateApprNote();
-    if(state.editSeq){
-      const idx=state.order.indexOf(state.activeInput);
-      if(idx<state.order.length-1){openKeypad(state.order[idx+1]);} else {state.editSeq=false; closeKeypad();}
-    } else { // approach fields: close after single digit
-      closeKeypad();
-    }
+    if(state.editSeq){ var i=state.order.indexOf(state.activeInput); if(i<state.order.length-1) openKeypad(state.order[i+1]); else closeKeypad(); }
+    else if(approachSeq){ var j=approachOrder.indexOf(state.activeInput); if(j<approachOrder.length-1) openKeypad(approachOrder[j+1]); else closeKeypad(); }
+    else closeKeypad();
   }
 });
-backdrop.addEventListener('click',()=>{state.editSeq=false; closeKeypad();});
-kpClose.addEventListener('click',()=>{state.editSeq=false; closeKeypad();});
+backdrop.addEventListener('click',function(){ closeKeypad(); });
+kpClose.addEventListener('click',function(){ closeKeypad(); });
 
-document.addEventListener('keydown',(e)=>{
-  const k=e.key;
-  if(k==='n'||k==='N'){e.preventDefault();emitInstruction();return;}
-  if(k==='b'||k==='B'){e.preventDefault();if(state.lastTTS) speak(state.lastTTS);return;}
-  if(k==='i'||k==='I'){e.preventDefault();doInitialize();return;}
-  if(k==='r'||k==='R'){e.preventDefault();doReinitialize();return;}
-  if(k==='h'||k==='H'){e.preventDefault();focusSection('H');return;}
-  if(k==='a'||k==='A'){e.preventDefault();focusSection('A');return;}
-  if(k==='s'||k==='S'){e.preventDefault();focusSection('S');return;}
-  if(e.code==='Space'){
-    e.preventDefault();
-    const isBlur=textOut.classList.contains('blurred');
+/* 버튼 + FAB 이벤트 */
+$('btnInit').addEventListener('click', doInitialize);
+$('btnReinit').addEventListener('click', doReinitialize);
+$('sayAgain').addEventListener('click', function(){ if(state.lastTTS) speak(state.lastTTS); });
+$('next').addEventListener('click', emitInstruction);
+$('btnApproach').addEventListener('click', function(){ genApproach(true); });
+
+var fabToggle=$('fabToggle'),fabWrap=$('fabWrap');
+fabToggle.addEventListener('change',function(){ fabWrap.style.display=this.checked?'flex':'none'; });
+$('fabNext').onclick=function(){ emitInstruction(); };
+$('fabSay').onclick=function(){ if(state.lastTTS) speak(state.lastTTS); };
+$('fabGen').onclick=function(){ genApproach(true); };
+$('fabInit').onclick=function(){ doInitialize(); };
+$('fabRe').onclick=function(){ doReinitialize(); };
+
+/* 키보드 */
+document.addEventListener('keydown',function(e){
+  var k=e.key;
+  if(k==='n'||k==='N'){ e.preventDefault(); emitInstruction(); return; }
+  if(k==='b'||k==='B'){ e.preventDefault(); if(state.lastTTS) speak(state.lastTTS); return; }
+  if(k==='i'||k==='I'){ e.preventDefault(); doInitialize(); return; }
+  if(k==='r'||k==='R'){ e.preventDefault(); doReinitialize(); return; }
+  if(k==='h'||k==='H'){ e.preventDefault(); focusSection('H'); return; }
+  if(k==='a'||k==='A'){ e.preventDefault(); focusSection('A'); return; }
+  if(k==='s'||k==='S'){ e.preventDefault(); focusSection('S'); return; }
+  if(k==='g'||k==='G'){ e.preventDefault(); genApproach(true); return; }
+  if(e.code==='Space'){ e.preventDefault(); var isBlur=textOut.classList.contains('blurred');
     if(isBlur){ textOut.classList.remove('blurred'); blurHint.classList.add('hidden'); }
     else{ textOut.classList.add('blurred'); blurHint.classList.remove('hidden'); }
     return;
   }
-  // prevent keyboard entry for approach fields: ignore numeric/backspace when target is approach
-  const apprSet = new Set([pmin1,pmin2,pmin3,pmax1,pmax2,pmax3]);
-  if(state.activeInput && apprSet.has(state.activeInput)){
-    e.stopPropagation();
-    return; // no keyboard input for approach fields
-  }
-  if(state.activeInput && /^[0-9]$/.test(k)){e.preventDefault();state.activeInput.value=k;updatePreviews();
-    if(state.editSeq){const idx=state.order.indexOf(state.activeInput); if(idx<state.order.length-1){openKeypad(state.order[idx+1]);} else {state.editSeq=false; closeKeypad();}} else { closeKeypad(); }}
-  if(state.activeInput && k==='Backspace'){e.preventDefault();state.activeInput.value='';updatePreviews();}
+  var apprSet=[pmin1,pmin2,pmin3,pmax1,pmax2,pmax3];
+  if(state.activeInput && apprSet.indexOf(state.activeInput)!==-1){ e.stopPropagation(); return; }
+  if(state.activeInput && /^[0-9]$/.test(k)){ e.preventDefault(); state.activeInput.value=k; updatePreviews();
+    if(state.editSeq){ var idx=state.order.indexOf(state.activeInput); if(idx<state.order.length-1) openKeypad(state.order[idx+1]); else closeKeypad(); }
+    else closeKeypad(); }
+  if(state.activeInput && k==='Backspace'){ e.preventDefault(); state.activeInput.value=''; updatePreviews(); }
 });
 
+/* 상태/로직 */
 function readInputsToState(){
-  const hdg=digitsToInt(h1,h2,h3)%360, alt=clampAlt(digitsToInt(a1,a2)*100), spd=clampSpd(digitsToInt(s1,s2)*10);
+  var hdg=digitsToInt(h1,h2,h3)%360, alt=clampAlt(digitsToInt(a1,a2)*100), spd=clampSpd(digitsToInt(s1,s2)*10);
   state.cur_hdg=hdg; state.cur_alt=alt; state.cur_spd=spd; state.difficulty=parseInt(difficultySel.value,10);
-  document.getElementById('initMsg').textContent='초기화 완료';
+  $('initMsg').textContent='초기화 완료';
 }
 function doInitialize(){
   readInputsToState();
@@ -353,73 +406,124 @@ function doReinitialize(){
   textOut.textContent='Reinitialized. Next Instruction을 누르세요.';
 }
 
-/* ====== Approach Speed generator with adjustable range ====== */
-function readApprMin(){return digitsToInt(pmin1,pmin2,pmin3)||145;}
-function readApprMax(){return digitsToInt(pmax1,pmax2,pmax3)||152;}
+/* ---- Approach Speed ---- */
+function digitsAvi(n){
+  var s=(''+n).replace(/\D/g,'').padStart(3,'0');
+  var A=['Zero','One','Two','Tree','Four','Fife','Six','Seven','Eight','Niner'];
+  return A[parseInt(s[0],10)]+' '+A[parseInt(s[1],10)]+' '+A[parseInt(s[2],10)];
+}
+function readApprMin(){ return digitsToInt(pmin1,pmin2,pmin3) || 145; }
+function readApprMax(){ return digitsToInt(pmax1,pmax2,pmax3) || 152; }
 function updateApprNote(){
-  const mn = readApprMin(), mx = readApprMax();
-  const lo = Math.min(mn,mx), hi=Math.max(mn,mx);
-  apprRangeNote.textContent = `범위: ${lo}–${hi} kt`;
+  var mn=readApprMin(), mx=readApprMax();
+  var lo=Math.min(mn,mx), hi=Math.max(mn,mx);
+  apprRangeNote.textContent='범위: '+lo+'–'+hi+' kt';
 }
-function genApproach(){
-  let mn = readApprMin(), mx = readApprMax();
-  if (mn>mx){ const t=mn; mn=mx; mx=t; }
-  const v = Math.floor(Math.random()*(mx-mn+1))+mn;
-  apprVal.textContent = `${v} kt`;
+function genApproach(doTTS){
+  var mn=readApprMin(), mx=readApprMax(); if(mn>mx){ var t=mn; mn=mx; mx=t; }
+  var v = Math.floor(Math.random()*(mx-mn+1))+mn;
+  apprVal.textContent = v+' kt';
+  if(doTTS){ var w=digitsAvi(v); speak('Approach Speed '+w+' knots, Approach Speed '+w+' knots'); }
 }
-btnApproach.addEventListener('click', genApproach);
+updateApprNote();
 
-/* ====== Difficulty-based instruction generator ====== */
-function getInstruction(difficulty,cur_hdg,cur_alt,cur_spd){
-  let turnd = Math.floor(Math.random()*2)+1; // 1 Left / 2 Right
-  let target_hdg = cur_hdg;
-  let climb_descend = Math.floor(Math.random()*2); // 0 down / 1 up
-  let target_alt = cur_alt;
-  let target_spd = cur_spd;
-  let target_fpm = 1000;
+/* ---- Instruction ---- */
+function getInstruction(d,cur_hdg,cur_alt,cur_spd){
+  var turnd=Math.floor(Math.random()*2)+1;
+  var target_hdg=cur_hdg, climb_descend=Math.floor(Math.random()*2);
+  var target_alt=cur_alt, target_spd=cur_spd, target_fpm=1000;
 
-  if (cur_alt <= MIN_ALT) climb_descend = 1;
-  if (cur_alt >= MAX_ALT) climb_descend = 0;
+  /* 한계고도 로직: floor=2500, ceiling=9500 */
+  if(cur_alt<=MIN_ALT) climb_descend=1;
+  if(cur_alt>=MAX_ALT) climb_descend=0;
 
-  if (difficulty === 1){ // Easy
-    target_hdg = (cur_hdg + 180) % 360;
-    const altStep = Math.random() < 0.5 ? 1000 : 2000;
-    target_alt = clampAlt(cur_alt + (climb_descend? +altStep : -altStep));
-    target_spd = cur_spd;
-    target_fpm = Math.random() < 0.5 ? 1000 : 1500;
-  } else if (difficulty === 2){ // Normal
-    target_hdg = (cur_hdg + 180) % 360;
-    const altStep = Math.random() < 0.5 ? 1000 : 2000;
-    target_alt = clampAlt(cur_alt + (climb_descend? +altStep : -altStep));
-    const spdDelta = Math.random() < 0.5 ? -20 : +20;
-    target_spd = clampSpd(cur_spd + spdDelta);
-    target_fpm = Math.random() < 0.5 ? 1000 : 1500;
-  } else { // Hard
-    let delta5=(Math.floor(Math.random()*27)+10)*5;
-    target_hdg = cur_hdg + (turnd===1? -delta5 : +delta5);
-    target_hdg = ((target_hdg%360)+360)%360;
-    const climbSteps = [1000,1500,2000];
-    const descendSteps = [1500,2000];
-    let altStep = (climb_descend ? climbSteps[Math.floor(Math.random()*climbSteps.length)]
-                                 : descendSteps[Math.floor(Math.random()*descendSteps.length)]);
-    target_alt = clampAlt(cur_alt + (climb_descend? +altStep : -altStep));
-    target_spd = clampSpd(cur_spd + ((Math.floor(Math.random()*3)-1)*20)); // -20/0/+20
+  if(d===1){ // Easy
+    target_hdg=(cur_hdg+180)%360;
+    var step1=Math.random()<0.5?1000:2000;
+    target_alt=clampAlt(cur_alt+(climb_descend?+step1:-step1));
+    target_spd=cur_spd;
+    target_fpm=Math.random()<0.5?1000:1500;
+  }else if(d===2){ // Normal
+    target_hdg=(cur_hdg+180)%360;
+    var step2=Math.random()<0.5?1000:2000;
+    target_alt=clampAlt(cur_alt+(climb_descend?+step2:-step2));
+    var dv=Math.random()<0.5?-20:+20;
+    target_spd=clampSpd(cur_spd+dv);
+    target_fpm=Math.random()<0.5?1000:1500;
+  }else if(d===3){ // Hard
+    var delta5=(Math.floor(Math.random()*27)+10)*5;
+    target_hdg=((cur_hdg+(turnd===1?-delta5:+delta5))%360+360)%360;
+    var up=[1000,1500,2000], down=[1500,2000];
+    var stepH=(climb_descend?up[Math.floor(Math.random()*up.length)]:down[Math.floor(Math.random()*down.length)]);
+    target_alt=clampAlt(cur_alt+(climb_descend?+stepH:-stepH));
+    target_spd=clampSpd(cur_spd+((Math.floor(Math.random()*3)-1)*20));
     target_fpm=(Math.floor(Math.random()*13)+9)*100;
-    target_hdg = target_hdg - (target_hdg%10);
+    target_hdg=target_hdg-(target_hdg%10);
+  }else{ // Extreme
+    // Heading: 5deg grid
+    var d5=(Math.floor(Math.random()*36)+2)*5; // 10°~190° 범위에서 5° 스텝
+    target_hdg=((cur_hdg+(turnd===1?-d5:+d5))%360+360)%360;
+    target_hdg=target_hdg - (target_hdg%5); // snap to 5°
+    // Altitude change: 1500~3000 by 100 (결과는 100ft 단위, 최종 clamp)
+    var stepList=[]; for(var s=1500;s<=3000;s+=100) stepList.push(s);
+    var stepA=stepList[Math.floor(Math.random()*stepList.length)];
+    target_alt=clampAlt(cur_alt+(climb_descend?+stepA:-stepA));
+    target_alt = target_alt - (target_alt%100);
+    // Speed: 5 kt step within 160~210
+    var spdChoices=[-10,-5,0,+5,+10];
+    var dv5=spdChoices[Math.floor(Math.random()*spdChoices.length)];
+    target_spd=clampSpd(cur_spd+dv5);
+    target_spd = target_spd - (target_spd%5);
+    // FPM: 500~3000 by 100
+    target_fpm = (Math.floor(Math.random()*26)+5)*100; // 500..3000
   }
   return [turnd,target_hdg,climb_descend,target_alt,target_spd,target_fpm];
 }
 
-function emitInstruction(){
-  if(state.lastText){
-    const item=document.createElement('div'); item.className='log-item mono'; item.textContent=state.lastText; logList.prepend(item);
+/* 로그 추가 + 통계 */
+function addLogEntry(text){
+  var wrap=document.createElement('div');
+  wrap.className='log-item';
+  var label=document.createElement('label');
+
+  var cb=document.createElement('input');
+  cb.type='checkbox';
+  cb.title='오답이면 체크';
+  cb.addEventListener('change',updateLogSummary);
+
+  var span=document.createElement('span');
+  span.className='log-text mono';
+  span.textContent=text;
+
+  label.appendChild(cb);
+  label.appendChild(span);
+  wrap.appendChild(label);
+  logList.prepend(wrap);
+
+  updateLogSummary();
+}
+function updateLogSummary(){
+  var items=logList.querySelectorAll('.log-item');
+  var total=items.length, wrong=0;
+  for(var i=0;i<items.length;i++){
+    var cb=items[i].querySelector('input[type="checkbox"]');
+    if(cb && cb.checked){ wrong++; items[i].classList.add('log-wrong'); }
+    else { items[i].classList.remove('log-wrong'); }
   }
-  let [turnd,target_hdg,climbdescend,target_alt,target_spd,target_fpm]=getInstruction(state.difficulty,state.cur_hdg,state.cur_alt,state.cur_spd);
+  var correct=total - wrong;
+  var per= total? Math.round(wrong*100/total) : 0;
+  logSummary.textContent='총 '+total+' / 정답 '+correct+' / 오답 '+wrong+' / 오답 '+per+'%';
+}
+
+function emitInstruction(){
+  if(state.lastText){ addLogEntry(state.lastText); }
+  var out=getInstruction(state.difficulty,state.cur_hdg,state.cur_alt,state.cur_spd);
+  var turnd=out[0], target_hdg=out[1], climbdescend=out[2], target_alt=out[3], target_spd=out[4], target_fpm=out[5];
   target_hdg=((target_hdg%360)+360)%360;
 
-  const text=`Korean air one two three tango, Turn ${turnd===1?'Left':'Right'} heading ${String(target_hdg).padStart(3,'0')}, ${climbdescend===0?'Descend and maintain ':'Climb and Maintain '}${target_alt} Speed ${target_spd} Rate ${target_fpm}`;
-  const ha=hdgSpdInAviation(target_hdg), sa=hdgSpdInAviation(target_spd);
-  const tts=`Korean air one two three tango, Turn ${turnd===1?'Left':'Right'} heading ${ha[0]}${ha[1]}${ha[2]}, ${climbdescend===0?'Descend and maintain ':'Climb and Maintain '}${altFpmInAviation(target_alt)}, Speed ${sa[0]}${sa[1]}${sa[2]}, Rate ${altFpmInAviation(target_fpm)}`;
+  var text='Korean air one two three tango, Turn '+(turnd===1?'Left':'Right')+' heading '+(''+target_hdg).padStart(3,'0')+', '+(climbdescend===0?'Descend and maintain ':'Climb and Maintain ')+target_alt+' Speed '+target_spd+' Rate '+target_fpm;
+  var ha=hdgSpdInAviation(target_hdg), sa=hdgSpdInAviation(target_spd);
+  var tts='Korean air one two three tango, Turn '+(turnd===1?'Left':'Right')+' heading '+ha[0]+ha[1]+ha[2]+', '+(climbdescend===0?'Descend and maintain ':'Climb and Maintain ')+altFpmInAviation(target_alt)+', Speed '+sa[0]+sa[1]+sa[2]+', Rate '+altFpmInAviation(target_fpm);
 
   state.lastText=text; state.lastTTS=tts;
   state.cur_hdg=target_hdg; state.cur_alt=target_alt; state.cur_spd=target_spd;
@@ -428,34 +532,23 @@ function emitInstruction(){
   speak(tts);
 }
 
-function setDefaultInputs(hdg=190,alt=4000,spd=210){
-  const h=String(hdg).padStart(3,'0'); h1.value=h[0]; h2.value=h[1]; h3.value=h[2];
-  const a=String(Math.round(alt/100)).padStart(2,'0'); a1.value=a[0]; a2.value=a[1];
-  const s=String(Math.round(spd/10)).padStart(2,'0'); s1.value=s[0]; s2.value=s[1];
+/* 기본값 */
+function setDefaultInputs(hdg,alt,spd){
+  hdg=(typeof hdg==='number')?hdg:330; alt=(typeof alt==='number')?alt:3000; spd=(typeof spd==='number')?spd:170;
+  var h=(''+hdg).padStart(3,'0'); h1.value=h[0]; h2.value=h[1]; h3.value=h[2];
+  var a=(''+Math.round(alt/100)).padStart(2,'0'); a1.value=a[0]; a2.value=a[1];
+  var s=(''+Math.round(spd/10)).padStart(2,'0'); s1.value=s[0]; s2.value=s[1];
   updatePreviews();
 }
-function setDefaultApproach(minv=145,maxv=152){
-  const mn=String(minv).padStart(3,'0'); pmin1.value=mn[0]; pmin2.value=mn[1]; pmin3.value=mn[2];
-  const mx=String(maxv).padStart(3,'0'); pmax1.value=mx[0]; pmax2.value=mx[1]; pmax3.value=mx[2];
+function setDefaultApproach(minv,maxv){
+  minv=(typeof minv==='number')?minv:145; maxv=(typeof maxv==='number')?maxv:152;
+  var mn=(''+minv).padStart(3,'0'); pmin1.value=mn[0]; pmin2.value=mn[1]; pmin3.value=mn[2];
+  var mx=(''+maxv).padStart(3,'0'); pmax1.value=mx[0]; pmax2.value=mx[1]; pmax3.value=mx[2];
   updateApprNote();
 }
-function digitsToInt(...ds){let s=ds.map(x=>(x.value||'0').replace(/\D/g,'').slice(0,1)).join('');return parseInt(s||'0',10);}
-function updatePreviews(){
-  const hdg=(digitsToInt(h1,h2,h3))%360, alt=digitsToInt(a1,a2)*100, spd=digitsToInt(s1,s2)*10;
-  hdgPreview.textContent=`HDG: ${String(hdg).padStart(3,'0')}°`;
-  altPreview.textContent=`ALT: ${alt} ft`; spdPreview.textContent=`SPD: ${spd} kt`;
-}
-
-setDefaultInputs();
+setDefaultInputs(330,3000,170);
 setDefaultApproach(145,152);
-textOut.textContent='숫자를 입력한 뒤 Initialize(I/R) 또는 Next(N)를 사용하세요. Approach 범위는 카드에서 팝업 키패드로 조정.';
-
-// Register service worker for PWA
-if ('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./service-worker.js');
-  });
-}
+textOut.textContent='숫자 입력 후 Initialize(I/R) 또는 Next(N). Approach 범위는 카드에서 팝업 키패드로 조정.';
 </script>
 </body>
 </html>
